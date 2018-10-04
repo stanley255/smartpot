@@ -1,0 +1,1 @@
+INSERT INTO SMARTPOT.PRODUCT_TYPE(name,valid) VALUES("Basic Pot","Y");
