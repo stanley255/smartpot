@@ -7,6 +7,7 @@
     if (mysqli_stmt_bind_param($stmt,"ii",$xProductId,$xTemperature)){
       if (mysqli_stmt_execute($stmt)){
         $response["action"] = 1;
+        echo json_encode($response);
       } else{
         $response["action"] = -3;
       }
