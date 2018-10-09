@@ -11,6 +11,16 @@ CREATE TABLE ACTIVE_PRODUCTS(
   active_since       DATE,
   FOREIGN KEY(fk_product_type_id) REFERENCES PRODUCT_TYPE(id)
 );
+
+CREATE TABLE USERS(
+  id            INT PRIMARY KEY AUTO_INCREMENT,
+  username      VARCHAR(100) NOT NULL,
+  pasword       VARCHAR(500) NOT NULL,
+  email         VARCHAR(100),
+  fk_product_id INT,
+  FOREIGN KEY(fk_product_id) REFERENCES ACTIVE_PRODUCTS(id)
+);
+
 /*ZATIAL NIE JE V DATABAZE*/
 CREATE TABLE PRODUCTS_CONFIG(
   id                   INT PRIMARY KEY AUTO_INCREMENT,
