@@ -12,11 +12,14 @@
         echo json_encode($response);
       } else{
         $response["action"] = -3;
+        echo json_encode($response);
       }
     } else{
       $response["action"] = -2;
+      echo json_encode($response);
     }
   } else{
     $response["action"] = -1;
+    echo json_encode($response);
   }
 ?>
