@@ -1,19 +1,21 @@
+/*LIBRARIES REQUIRED*/
 #include <ESP8266HTTPClient.h>
 #include <ESP8266Wifi.h>
 #include <string.h>
-
+/*SSID PART*/
 #define SSID "xiaomi"
 #define PSWD "12345678"
 #define sensorPin 0
+/*HTTP PART*/
+HTTPClient http;
+
+char strToSend[200];
+char const saveSensorDataURL[100]="http://robocode.sk/smartpot/php/saveSensorData.php?";
+char GETPart[100];
 
 int id =1;
 float tmp;
 float hmd;
-char const serverWeb[70]="http://robocode.sk/smartpot/php/saveSensorData.php?";
-char dataStr[30];
-char strToSend[100];
-HTTPClient http;
-
 
 void setup() { 
   Serial.begin(115200);
@@ -28,13 +30,13 @@ float readTemp(){
   return temperature;
 }
 
-char *strHandling(char *serverWeb, char* dataStr, char* strToSend){
-  memset(dataStr,0,strlen(dataStr));
+char *strHandling(char *saveSensorDataURL, char* GETPart, char* strToSend){
+  memset(GETPart,0,strlen(GETPart));
   memset(strToSend,0,strlen(strToSend));
   tmp=random(1,10);
-  sprintf(dataStr,"id=%d&temp=%lf",id,tmp);
-  strcat(strToSend,serverWeb);
-  strcat(strToSend,dataStr);
+  sprintf(GETPart,"id=%d&temp=%lf",id,tmp);
+  strcat(strToSend,saveSensorDataURL);
+  strcat(strToSend,GETPart);
   Serial.println(strToSend);
   return (strToSend);
 }
