@@ -7,6 +7,8 @@
   $xHumidity    = $_GET["hum"];
   // Check data
   if (is_null($xProductId) or is_null($xTemperature) or is_null($xHumidity)){
+    $response["action"] = -1;
+    echo json_encode($response);
     exit;
   }
   // Correct data if necessary
@@ -18,17 +20,14 @@
       if (mysqli_stmt_execute($stmt)){
         mysqli_stmt_close($stmt);
         $response["action"] = 1;
-        echo json_encode($response);
       } else{
-        $response["action"] = -3;
-        echo json_encode($response);
+        $response["action"] = -4;
       }
     } else{
-      $response["action"] = -2;
-      echo json_encode($response);
+      $response["action"] = -3;
     }
   } else{
-    $response["action"] = -1;
-    echo json_encode($response);
+    $response["action"] = -2;
   }
+  echo json_encode($response);
 ?>
