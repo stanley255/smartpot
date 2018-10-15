@@ -1,15 +1,6 @@
-CREATE TABLE PRODUCT_TYPE(
-  id    INT PRIMARY KEY AUTO_INCREMENT,
-  name  VARCHAR(200),
-  valid VARCHAR(1),
-  CHECK(valid='Y' OR valid='N')
-);
-
 CREATE TABLE ACTIVE_PRODUCTS(
   id                 INT PRIMARY KEY AUTO_INCREMENT,
-  fk_product_type_id INT,
-  active_since       DATE,
-  FOREIGN KEY(fk_product_type_id) REFERENCES PRODUCT_TYPE(id)
+  active_since       DATE
 );
 
 CREATE TABLE USERS(
@@ -32,6 +23,7 @@ CREATE TABLE PRODUCTS_CONFIG(
 CREATE TABLE COLLECTED_DATA(
   id            INT PRIMARY KEY AUTO_INCREMENT,
   fk_product_id INT,
+  rep_date      DATE,
   temperature   FLOAT(7,4) DEFAULT NULL,
   humidity      FLOAT(7,4) DEFAULT NULL,
   FOREIGN KEY(fk_product_id) REFERENCES ACTIVE_PRODUCTS(id)
