@@ -43,6 +43,7 @@ void createString(char *strToSend, float tmp, float hmd){                       
 
 void httpGetRequest(float tmp, float hmd){                                              /*Function sending http get request to a server*/
   char *strToSend=(char*) malloc (200);
+  *strToSend='\0';
   createString(strToSend,tmp,hmd);  
   
   Serial.println(strToSend);
@@ -58,7 +59,6 @@ void loop() {
     Serial.println("connecting");
     delay(500);
   }
-  httpGetRequest(6.9,6.66);
-  delay(2000);
+  delay(5000);
   
 }
