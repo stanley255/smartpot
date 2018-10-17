@@ -14,7 +14,7 @@ HTTPClient http;
  * Global Variables - these are defined to lessen 
  * the number of parameters passed to functions
 */
-char const saveSensorDataURL[100]="http://robocode.sk/smartpot/php/saveSensorData.php?"; /*The Adress of server you want to send the data to*/
+char const saveSensorDataURL[100]="http://robocode.sk/smartpot/php/saveSensorData.php?";       /*The Adress of server you want to send the data to*/
 float tmp;                                                                               /*Temperature measurements go here*/
 float hmd;                                                                               /*Humidity measurements go here*/
 
@@ -29,14 +29,13 @@ float readVals(){                                                               
   int reading=analogRead(sensorPin);
   float voltage = reading * 3.3; 
   voltage /= 1024.0; 
-  float temperature = (voltage - 0.5) * 100;
-  return temperature;
+  tmp = (voltage - 0.5) * 100;
 }
 
 void createString(char *strToSend, float tmp, float hmd){                               /*Function creating the string which is to be sent by httpGetRequest*/
-  char *valString=(char*) malloc (50);
+  char *valString=(char*) malloc (70);
   
-  sprintf(valString,"id=%d&temp=%lf",ID,tmp);
+  sprintf(valString,"id=%d&temp=%lf&hum=%lf",ID,tmp,hmd);
   strcat(strToSend,saveSensorDataURL);
   strcat(strToSend,valString);  
   free (valString);
@@ -59,5 +58,7 @@ void loop() {
     Serial.println("connecting");
     delay(500);
   }
+  httpGetRequest(6.9,6.66);
+  delay(2000);
   
 }
