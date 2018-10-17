@@ -1,6 +1,6 @@
 CREATE TABLE ACTIVE_PRODUCTS(
   id                 INT PRIMARY KEY AUTO_INCREMENT,
-  active_since       DATE
+  active_since       DATETIME
 );
 
 CREATE TABLE USERS(
@@ -23,7 +23,7 @@ CREATE TABLE PRODUCTS_CONFIG(
 CREATE TABLE COLLECTED_DATA(
   id            INT PRIMARY KEY AUTO_INCREMENT,
   fk_product_id INT,
-  rep_date      DATE,
+  rep_date      DATETIME,
   temperature   FLOAT(7,4) DEFAULT NULL,
   humidity      FLOAT(7,4) DEFAULT NULL,
   FOREIGN KEY(fk_product_id) REFERENCES ACTIVE_PRODUCTS(id)

@@ -12,7 +12,9 @@
   $xTemperature = $_GET["temp"];
   $xHumidity    = $_GET["hum"];
 
-  $xDate         = DATE("Y-m-d");
+  // Create report date
+  $xDate        = DATE("Y-m-d h:i:sa");
+  $xDate        = substr($xDate,0,strlen($xDate)-2);
   // Correct data if necessary
   $xTemperature = str_replace(',','.',$xTemperature);
   $xHumidity    = str_replace(',','.',$xHumidity);
