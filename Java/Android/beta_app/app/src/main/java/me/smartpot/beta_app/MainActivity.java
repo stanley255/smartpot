@@ -3,6 +3,8 @@ package me.smartpot.beta_app;
 import android.os.AsyncTask;
 import android.support.v7.app.AppCompatActivity;
 import android.os.Bundle;
+import android.view.View;
+import android.widget.Button;
 
 import java.io.BufferedReader;
 import java.io.IOException;
@@ -14,10 +16,22 @@ import java.net.URL;
 
 public class MainActivity extends AppCompatActivity {
 
+    String BASE_URL = "http://robocode.sk/smartpot/php/getLatestSensorData.php?id=1";
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
+
+        Button btnHTTP = (Button) findViewById(R.id.btnHTTP);
+
+        //When clicking on this button, DATA are requested
+        btnHTTP.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View view) {
+                //HttpGetRequest(BASE_URL);
+            }
+        });
     }
 
     public class HttpGetRequest extends AsyncTask<String, Void, String> {
@@ -77,6 +91,6 @@ public class MainActivity extends AppCompatActivity {
         //Instantiate new instance of our class
         HttpGetRequest getRequest = new HttpGetRequest();
         //Perform the doInBackground method, passing in our url
-        result = getRequest.execute(url).get();
+        //result = getRequest.execute(url).get();
     }
 }
