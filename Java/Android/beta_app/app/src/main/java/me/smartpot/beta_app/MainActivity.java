@@ -91,6 +91,6 @@ public class MainActivity extends AppCompatActivity {
         //Instantiate new instance of our class
         HttpGetRequest getRequest = new HttpGetRequest();
         //Perform the doInBackground method, passing in our url
-        //result = getRequest.execute(url).get();
+        result = getRequest.execute(url).get();
     }
 }
