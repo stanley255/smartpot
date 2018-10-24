@@ -29,7 +29,7 @@ public class MainActivity extends AppCompatActivity {
         btnHTTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                //HttpGetRequest(BASE_URL);
+                main();
             }
         });
     }
@@ -83,7 +83,7 @@ public class MainActivity extends AppCompatActivity {
         }
     }
 
-    public void main(String[] args) {
+    public void main() {
         //Some url endpoint that you may have
         String url = "http://robocode.sk/smartpot/php/getLatestSensorData.php?id=1";
         //String to place our result in
