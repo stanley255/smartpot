@@ -10,11 +10,13 @@ import org.apache.http.client.ClientProtocolException;
 import org.apache.http.client.HttpClient;
 import org.apache.http.client.methods.HttpGet;
 import org.apache.http.impl.client.HttpClientBuilder;
+import org.json.JSONException;
+import org.json.JSONObject;
 
 
 public class Aplikacia extends JFrame {
 
-	public static void main(String[] args) throws ClientProtocolException, IOException {
+	public static void main(String[] args) throws ClientProtocolException, IOException, JSONException {
 		
 		
 		
@@ -40,12 +42,24 @@ public class Aplikacia extends JFrame {
 
 		System.out.println(result);
 		
+		JSONObject jsnObject = new JSONObject(result.toString());
+		int action = jsnObject.getInt("action");
+		double temp = jsnObject.getDouble("temp");
+		double hum = jsnObject.getDouble("hum");
+		
+		System.out.println("action: " + action);
+		System.out.printf("temp: %.2f%n" , temp);
+		System.out.printf("hum: %.2f%n" , hum);
+		
 		
 		JFrame okno = new JFrame("SmartPot");
 		
 		
 		JTextArea txaText = new JTextArea();
-		txaText.append(result.toString());
+		txaText.append(result.toString() + "\n");
+		txaText.append("action: " + action + "\n");
+		txaText.append("temp: " + temp + "\n");
+		txaText.append("hum: " + hum);
 		
 		okno.add(txaText);
 		okno.setSize(1000, 300);
