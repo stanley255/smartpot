@@ -28,3 +28,12 @@ CREATE TABLE COLLECTED_DATA(
   humidity      FLOAT(7,4) DEFAULT NULL,
   FOREIGN KEY(fk_product_id) REFERENCES ACTIVE_PRODUCTS(id)
 );
+
+CREATE TABLE ACTIVE_TOKENS(
+  id              INT PRIMARY KEY AUTO_INCREMENT,
+  fk_product_id   INT,
+  salt            VARCHAR(200),
+  token_created   DATETIME,
+  status          INT,
+  FOREIGN KEY(fk_product_id) REFERENCES ACTIVE_PRODUCTS(id)
+);

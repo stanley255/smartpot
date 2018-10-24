@@ -74,7 +74,7 @@ public:
 
 int main() {
 	srand(time(NULL));
-	Hash my_hash = Hash(12, 12, 12, 12);
+	Hash my_hash = Hash(8, 8, 8, 8);
 	cout << my_hash.getHash() << endl;
 	return 0;
 }
