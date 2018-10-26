@@ -2,6 +2,7 @@
 #include <ESP8266HTTPClient.h>
 #include <ESP8266Wifi.h>
 #include <string.h>
+#include <ESP8266WebServer.h>
 /*DEFINITIONS PART*/
 #define SSID "xiaomi"                                                                    /*change this to your WiFi SSID*/
 #define PSWD "12345678"                                                                  /*change this to your WiFi password*/
@@ -14,7 +15,8 @@ HTTPClient http;
  * Global Variables - these are defined to lessen 
  * the number of parameters passed to functions
 */
-char const saveSensorDataURL[100]="http://robocode.sk/smartpot/php/saveSensorData.php?";       /*The Adress of server you want to send the data to*/
+char const saveSensorDataURL[100]="http://robocode.sk/smartpot/php/saveSensorData.php?"; /*The Adress of server you want to send the data to*/
+char saltAdress[100]="http://robocode.sk/smartpot/php/getSecurityToken.php";
 float tmp;                                                                               /*Temperature measurements go here*/
 float hmd;                                                                               /*Humidity measurements go here*/
 
@@ -41,6 +43,15 @@ void createString(char *strToSend, float tmp, float hmd){                       
   free (valString);
 }
 
+void getSecurityKey(){
+  http.begin(saltAdress);
+  http.addHeader("Content-Type", "text/plain");
+  http.POST("id=1");
+  String payload=http.getString();
+  Serial.println(payload);
+  http.end();
+  }
+
 void httpGetRequest(float tmp, float hmd){                                              /*Function sending http get request to a server*/
   char *strToSend=(char*) malloc (200);
   *strToSend='\0';
@@ -59,6 +70,7 @@ void loop() {
     Serial.println("connecting");
     delay(500);
   }
+  getSecurityKey();
   delay(5000);
   
 }
