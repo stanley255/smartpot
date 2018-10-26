@@ -2,36 +2,68 @@
   require '../sql/config.php';
   header('Content-Type: application/json');
   // Check data
-  if (!isset($_GET["id"]) or !isset($_GET["temp"]) or !isset($_GET["hum"])){
-    $response["action"] = -1;
+  if (!isset($_POST["id"]) or !isset($_POST["temp"]) or !isset($_POST["hum"]) or !isset($_POST["key"])){
+    $response["code"] = -1;
     echo json_encode($response);
     exit;
   }
   // Retrieve collected data from request
-  $xProductId   = $_GET["id"];
-  $xTemperature = $_GET["temp"];
-  $xHumidity    = $_GET["hum"];
-
+  $xId          = $_POST["id"];
+  $xTemperature = $_POST["temp"];
+  $xHumidity    = $_POST["hum"];
+  $xKey         = $_POST["key"];
+  // Check key from request
+  if ($stmt = mysqli_prepare($con, "SELECT hash FROM ACTIVE_TOKENS WHERE fk_product_id = ? AND status = 1")){
+    if (mysqli_stmt_bind_param($stmt,"i",$xId)){
+      if (mysqli_stmt_execute($stmt)){
+        if (mysqli_stmt_bind_result($stmt, $yHash)){
+          if (mysqli_stmt_fetch($stmt)){
+            $Hash = $yHash;
+          } else{
+            $response["code"] = "-3";
+            echo json_encode($response);
+            exit;
+          }
+        }
+      }
+    }
+  }
+  mysqli_stmt_close($stmt);
+  if ($Hash != $xKey){
+    $response["code"] = "-5";
+    echo json_encode($response);
+    exit;
+  }
   // Create report date
-  $xDate        = DATE("Y-m-d h:i:sa");
+  $xDate        = DATE("Y-m-d H:i:sa");
   $xDate        = substr($xDate,0,strlen($xDate)-2);
   // Correct data if necessary
   $xTemperature = str_replace(',','.',$xTemperature);
   $xHumidity    = str_replace(',','.',$xHumidity);
   // Insert values into DataBase
   if ($stmt = mysqli_prepare($con, "INSERT INTO COLLECTED_DATA(fk_product_id, temperature, humidity, rep_date) VALUES(?,?,?,?)")){
-    if (mysqli_stmt_bind_param($stmt,"idds",$xProductId,$xTemperature,$xHumidity, $xDate)){
+    if (mysqli_stmt_bind_param($stmt,"idds",$xId,$xTemperature,$xHumidity, $xDate)){
       if (mysqli_stmt_execute($stmt)){
-        mysqli_stmt_close($stmt);
-        $response["action"] = 1;
+        $response["code"] = 2;
       } else{
-        $response["action"] = -4;
+        $response["code"] = -6;
       }
     } else{
-      $response["action"] = -3;
+      $response["code"] = -4;
     }
   } else{
-    $response["action"] = -2;
+    $response["code"] = -2;
   }
+  mysqli_stmt_close($stmt);
+  // Change token status
+  $tokenStatus = $response["code"] == 1 ? 0 : -2;
+  if ($stmt = mysqli_prepare($con, "UPDATE ACTIVE_TOKENS SET status = ? WHERE status = 1 AND fk_product_id = ?")){
+    if (mysqli_stmt_bind_param($stmt,"ii",$tokenStatus,$xId)){
+      if (mysqli_stmt_execute($stmt)){
+        $response["code"] = 1;
+      }
+    }
+  }
+  mysqli_stmt_close($stmt);
   echo json_encode($response);
 ?>

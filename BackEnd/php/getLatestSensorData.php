@@ -3,7 +3,7 @@
   header('Content-Type: application/json');
   // No ID provided
   if (!isset($_GET["id"])){
-    $response["action"] = -1;
+    $response["code"] = -1;
     echo json_encode($response);
     exit;
   }
@@ -16,24 +16,24 @@
       if (mysqli_stmt_execute($stmt)){
         if (mysqli_stmt_bind_result($stmt,$yTemperature,$yHumidity)){
           if (mysqli_stmt_fetch($stmt)){
-            $response["action"] = 1;
-            $response["temp"]   = $yTemperature;
-            $response["hum"]    = $yHumidity;
+            $response["code"] = 1;
+            $response["temp"] = $yTemperature;            
+            $response["hum"]  = $yHumidity;
             mysqli_stmt_close($stmt);
           } else{
-            $response["action"] = 0;
+            $response["code"] = -3;
           }
         } else{
-          $response["action"] = -5;
+          $response["code"] = -8;
         }
       } else{
-        $response["action"] = -4;
+        $response["code"] = -6;
       }
     } else{
-      $response["action"] = -3;
+      $response["code"] = -4;
     }
   } else{
-    $response["action"] = -2;
+    $response["code"] = -2;
   }
   echo json_encode($response);
 ?>
