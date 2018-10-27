@@ -1,14 +1,17 @@
 <?php
   require '../sql/config.php';
   header('Content-Type: application/json');
-  $cActiveStatus = 1;
-  // Retrieve ID from request
-  if (!isset($_POST["id"])){
+
+  // Load ID from request
+  $xId = $_POST["id"];
+  // When ID is not provided
+  if (empty($xId)){
     $response["code"] = "-1";
     echo json_encode($response);
     exit;
   }
-  $xId = $_POST["id"];
+  // Prepare STATUS and date for token
+  $cActiveStatus = 1;
   $xDate        = DATE("Y-m-d H:i:s");
   $xDate        = substr($xDate,0,strlen($xDate)-2);
   // Get security_key for requested device

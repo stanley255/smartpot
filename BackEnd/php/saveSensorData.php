@@ -1,17 +1,17 @@
 <?php
   require '../sql/config.php';
   header('Content-Type: application/json');
-  // Check data
-  if (!isset($_POST["id"]) or !isset($_POST["temp"]) or !isset($_POST["hum"]) or !isset($_POST["key"])){
-    $response["code"] = -1;
-    echo json_encode($response);
-    exit;
-  }
   // Retrieve collected data from request
   $xId          = $_POST["id"];
   $xTemperature = $_POST["temp"];
   $xHumidity    = $_POST["hum"];
   $xKey         = $_POST["key"];
+  // Check data
+  if (empty($xId) or empty($xTemperature) or empty($xHumidity) or empty($xKey)){
+    $response["code"] = -1;
+    echo json_encode($response);
+    exit;
+  }
   // Check key from request
   if ($stmt = mysqli_prepare($con, "SELECT hash FROM ACTIVE_TOKENS WHERE fk_product_id = ? AND status = 1")){
     if (mysqli_stmt_bind_param($stmt,"i",$xId)){
