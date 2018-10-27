@@ -38,3 +38,14 @@ CREATE TABLE ACTIVE_TOKENS(
   status          INT,
   FOREIGN KEY(fk_product_id) REFERENCES ACTIVE_PRODUCTS(id)
 );
+
+CREATE TABLE INACTIVE_TOKENS(
+  id              INT PRIMARY KEY,
+  fk_product_id   INT,
+  salt            VARCHAR(200),
+  hash            VARCHAR(200),
+  token_created   DATETIME,
+  token_swapped   DATETIME,
+  status          INT,
+  FOREIGN KEY(fk_product_id) REFERENCES ACTIVE_PRODUCTS(id)
+);

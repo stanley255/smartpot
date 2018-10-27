@@ -56,7 +56,7 @@
   }
   mysqli_stmt_close($stmt);
   // Change token status
-  $tokenStatus = $response["code"] == 1 ? 0 : -2;
+  $tokenStatus = $response["code"] == 2 ? 0 : -2;
   if ($stmt = mysqli_prepare($con, "UPDATE ACTIVE_TOKENS SET status = ? WHERE status = 1 AND fk_product_id = ?")){
     if (mysqli_stmt_bind_param($stmt,"ii",$tokenStatus,$xId)){
       if (mysqli_stmt_execute($stmt)){
