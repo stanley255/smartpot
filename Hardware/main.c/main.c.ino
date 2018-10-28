@@ -16,7 +16,7 @@ HTTPClient http;
  * the number of parameters passed to functions
 */
 char const saveSensorDataURL[100]="http://robocode.sk/smartpot/php/saveSensorData.php?"; /*The Adress of server you want to send the data to*/
-char saltAdress[100]="http://robocode.sk/smartpot/php/getSecurityToken.php";
+char const saltAdress[100]="http://robocode.sk/smartpot/php/getSecurityToken.php";
 float tmp;                                                                               /*Temperature measurements go here*/
 float hmd;                                                                               /*Humidity measurements go here*/
 
@@ -45,7 +45,8 @@ void createString(char *strToSend, float tmp, float hmd){                       
 
 void getSecurityKey(){
   http.begin(saltAdress);
-  http.addHeader("Content-Type", "text/plain");
+  Serial.println(saltAdress);
+  http.addHeader("Content-Type", "application/json");
   http.POST("id=1");
   String payload=http.getString();
   Serial.println(payload);
