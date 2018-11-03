@@ -11,6 +11,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.concurrent.CancellationException;
+import java.util.concurrent.ExecutionException;
 
 //https://medium.com/@JasonCromer/android-asynctask-http-request-tutorial-6b429d833e28
 
@@ -29,7 +31,22 @@ public class MainActivity extends AppCompatActivity {
         btnHTTP.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View view) {
-                main();
+                //Some url endpoint that you may have
+                //String url = "http://robocode.sk/smartpot/php/getLatestSensorData.php?id=1";
+                //String to place our result in
+                String result;
+                //Instantiate new instance of our class
+                HttpGetRequest getRequest = new HttpGetRequest();
+                //Perform the doInBackground method, passing in our url
+                try{
+                    result = getRequest.execute(BASE_URL).get();
+                }
+                catch(InterruptedException  e){
+                    e.printStackTrace();
+                    result = null;
+                }
+                //result = getRequest.execute(BASE_URL).get();
+
             }
         });
     }
@@ -57,8 +74,7 @@ public class MainActivity extends AppCompatActivity {
                 //Connect to our url
                 connection.connect();
                 //Create a new InputStreamReader
-                InputStreamReader streamReader = new
-                        InputStreamReader(connection.getInputStream());
+                InputStreamReader streamReader = new InputStreamReader(connection.getInputStream());
                 //Create a new buffered reader and String Builder
                 BufferedReader reader = new BufferedReader(streamReader);
                 StringBuilder stringBuilder = new StringBuilder();
@@ -72,7 +88,7 @@ public class MainActivity extends AppCompatActivity {
                 //Set our result equal to our stringBuilder
                 result = stringBuilder.toString();
             }
-            catch(IOException e){
+            catch(IOException|CancellationException|InterruptedException e){
                 e.printStackTrace();
                 result = null;
             }
@@ -81,16 +97,5 @@ public class MainActivity extends AppCompatActivity {
         protected void onPostExecute(String result){
             super.onPostExecute(result);
         }
-    }
-
-    public void main() {
-        //Some url endpoint that you may have
-        String url = "http://robocode.sk/smartpot/php/getLatestSensorData.php?id=1";
-        //String to place our result in
-        String result;
-        //Instantiate new instance of our class
-        HttpGetRequest getRequest = new HttpGetRequest();
-        //Perform the doInBackground method, passing in our url
-        result = getRequest.execute(url).get();
     }
 }
