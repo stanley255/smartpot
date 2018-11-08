@@ -1,8 +1,10 @@
 /*LIBRARIES REQUIRED*/
 #include <ESP8266HTTPClient.h>
+#include <ArduinoJson.h>
 #include <ESP8266Wifi.h>
 #include <string.h>
 #include <ESP8266WebServer.h>
+//#include <sha256.h>
 /*DEFINITIONS PART*/
 #define SSID "xiaomi"                                                                    /*change this to your WiFi SSID*/
 #define PSWD "12345678"                                                                  /*change this to your WiFi password*/
@@ -16,10 +18,10 @@ HTTPClient http;
  * the number of parameters passed to functions
 */
 char const saveSensorDataURL[100]="http://robocode.sk/smartpot/php/saveSensorData.php?"; /*The Adress of server you want to send the data to*/
-char const saltAdress[100]="http://robocode.sk/smartpot/php/getSecurityToken.php";
+char saltAdress[100]="http://robocode.sk/smartpot/php/getSecurityToken.php";
 float tmp;                                                                               /*Temperature measurements go here*/
 float hmd;                                                                               /*Humidity measurements go here*/
-
+DynamicJsonBuffer jsonBuffer(200);
 
 void setup() { 
   Serial.begin(115200);                                                                  /*Initializes serial connection - for debug purposes*/
@@ -27,7 +29,7 @@ void setup() {
 }
 
 
-float readVals(){                                                                        /*Function handling the reading of temperature(and humidity? :) ) from the sensors*/
+float readVals(){                                                                        /*Function handling the reading of temperature(and humidity? ) from the sensors*/
   int reading=analogRead(sensorPin);
   float voltage = reading * 3.3; 
   voltage /= 1024.0; 
@@ -43,15 +45,26 @@ void createString(char *strToSend, float tmp, float hmd){                       
   free (valString);
 }
 
-void getSecurityKey(){
+String getSecurityKey(){
   http.begin(saltAdress);
-  Serial.println(saltAdress);
-  http.addHeader("Content-Type", "application/json");
+  http.addHeader("Content-Type", "application/x-www-form-urlencoded");
   http.POST("id=1");
   String payload=http.getString();
-  Serial.println(payload);
   http.end();
-  }
+  JsonObject& root = jsonBuffer.parseObject(payload);
+  String salt=root["salt"];
+  Serial.println(salt);
+//  Serial.println(hashString(salt));
+  return salt;
+}
+
+//uint8_t hashString(String salt){
+//  uint8_t *hash;
+//  Sha256.init();
+//  Sha256.print(salt);
+//  hash=Sha256.result();
+//  return hash;    
+//}
 
 void httpGetRequest(float tmp, float hmd){                                              /*Function sending http get request to a server*/
   char *strToSend=(char*) malloc (200);
