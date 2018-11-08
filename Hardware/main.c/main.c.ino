@@ -15,7 +15,7 @@
 #define tempPin 0                                                                       /*Pin where the temp sensor is connected to*/ 
 #define ID 1                                                                            /*ID No. of the board*/
 String const saveSensorDataURL="http://robocode.sk/smartpot/php/saveSensorData.php?";   /*The Adress of server you want to send the data to*/
-String const saltAdress="http://robocode.sk/smartpot/php/getSecurityToken.php";               /*The Adress to get the security key from*/
+String const saltAdress="http://robocode.sk/smartpot/php/getSecurityToken.php";         /*The Adress to get the security key from*/
 
 /**************************************************************GLOBAL VARIABLES***************************************************************/
 /**********************************These are defined to lessen the number of parameters passed to functions.**********************************/
