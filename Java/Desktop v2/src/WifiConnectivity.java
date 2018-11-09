@@ -1,13 +1,18 @@
 import java.util.Scanner;
 import java.util.Map;
 import java.util.LinkedHashMap;
+import java.util.Date;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.Reader;
 import java.net.HttpURLConnection;
 import java.net.URL;
-import java.net.URLEncoder; 
+import java.net.URLEncoder;
+
+import org.json.JSONException;
 import org.json.JSONObject;
+import org.json.JSONTokener;
+import org.json.JSONArray;
 
 public class WifiConnectivity {
 	// VARIABLES FOR SSID AND PASSWORD
@@ -27,7 +32,7 @@ public class WifiConnectivity {
 			System.out.println("getCredentials error occured! Sad");
 		}
 	}
-	
+	// METHOD USED TO SEND REQUEST AND HANDLE RESPONSE
 	public static void SendRequestAndGetResponse() {
 		try {
 			URL url = new URL("http://robocode.sk/smartpot/php/transefWifiCredentials.php");
@@ -55,7 +60,7 @@ public class WifiConnectivity {
 			conn.getOutputStream().write(postDataBytes);
 			
 			
-			//GETTING RESPONSE FROM THE URL
+			//HANDLING RESPONSE FROM THE URL
 			Reader in = new BufferedReader(new InputStreamReader(conn.getInputStream(),"UTF-8"));
 			
 			StringBuilder sb = new StringBuilder();
@@ -76,14 +81,85 @@ public class WifiConnectivity {
 			e.printStackTrace();
 		}
 	}
-
+	
+	public static void parseJSON() {
+		System.out.println("Parsing JSON response now..\r\n");
+		JSONObject jsonText;
+		try {
+			jsonText = new JSONObject(
+					"{\r\n" +
+					"  \"amount\":\"5\",\r\n" + 
+					"  \"data\": [\r\n" + 
+					"      { \"date\":\"2018-10-26 19:53:16\", \"temp\":21.42 , \"hum\":45.47},\r\n" + 
+					"      { \"date\":\"2018-10-26 22:12:14\", \"temp\":20.23 , \"hum\":44.01},\r\n" + 
+					"      { \"date\":\"2018-10-27 03:18:33\", \"temp\":22.57 , \"hum\":42.19},\r\n" + 
+					"      { \"date\":\"2018-10-27 10:12:14\", \"temp\":22.44 , \"hum\":40.12},\r\n" + 
+					"      { \"date\":\"2018-10-27 14:29:37\", \"temp\":22.56 , \"hum\":39.01}\r\n" + 
+					"  ]\r\n" + 
+					"} ");
+			int amount =  jsonText.getInt("amount");
+			JSONArray data = jsonText.getJSONArray("data");
+			//Map<String, Udaje> mapa = new LinkedHashMap();
+			//Map<String, String> mapa = new LinkedHashMap();
+			for(int i=0; i<amount; i++) {			
+				JSONObject tmp = data.getJSONObject(i);
+			    String date = tmp.getString("date");
+			    Double temp = tmp.getDouble("temp");
+			    Double hum = tmp.getDouble("hum");
+			    System.out.println("Udaje c." + (i+1) + ": " + date + " " + temp + " " + hum);
+			}
+		} catch (JSONException e) {
+			System.out.println("JSONObject error occured! Sad");
+			e.printStackTrace();
+		}
+		
+	}
+	
+	// MAIN METHOD
 	public static void main(String[] args) {
 		
 		//get SSID and PASSWORD
 		WifiConnectivity.getCredentials();
 		//SEND REQUEST AND HANDLE RESPONSE
 		WifiConnectivity.SendRequestAndGetResponse();
-		
+		System.out.println("\r\n");
+		//PARSE JSON TEXT PLS
+		parseJSON();
+				
 	}
+	
+	/*
+	class Udaje{
+	    private String key;
+	    private Date date;
+	    private double temp;
+	    private double hum;
+
+	    public void Demo(String key, Date date, double temp, double hum){
+	        this.key=key;
+	        this.date = date;
+	        this.temp = temp;
+	        this.hum = hum;
+	    }
+	    
+	    public Date getTime() {
+	        return date;
+	    }
+	    public double getTemp() {
+	        return temp;
+	    }
+	    public double getHum() {
+	        return hum;
+	    }
+	    public String getKey() {
+	        return key;
+	    }
+	    @Override
+	    public String toString() {
+	        return "Data [date=" + date + ", temperature=" + temp + ", humidity=" + hum + "]";
+	    }
+
+	}
+	*/
 	
 }
