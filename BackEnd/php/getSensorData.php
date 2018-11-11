@@ -25,16 +25,20 @@
     $xEnd = "3000-01-01";
   }
   // Execute query and create JSON with data
-  if ($stmt = mysqli_prepare($con, "SELECT rep_date,temperature,humidity FROM COLLECTED_DATA WHERE id = ? AND rep_date >= ? AND rep_date <= ?")){
+  if ($stmt = mysqli_prepare($con, "SELECT rep_date,temperature,humidity FROM COLLECTED_DATA WHERE fk_product_id = ? AND rep_date BETWEEN ? AND ?")){
       if (mysqli_stmt_bind_param($stmt,"iss",$xId,$xStart,$xEnd)){
           if (mysqli_stmt_execute($stmt)){
               if (mysqli_stmt_bind_result($stmt,$yDate,$yTemperature,$yHumidity)){
-                  $i = 0;
-                  $response["query"] = "SELECT rep_date,temperature,humidity FROM COLLECTED_DATA WHERE id = ".$xId." AND rep_date >= ".$xStart." AND rep_date <= ".$xEnd;
+                  $data = array();
                   while (mysqli_stmt_fetch($stmt)){
-                    $data[$i] = $yTemperature;
-                    $i = $i + 1;
+                    $rep = array();
+                    $rep["date"] = $yDate;
+                    $rep["temp"] = $yTemperature;
+                    $rep["hum"]  = $yHumidity;
+                    $data[] = $rep;
                   }
+                  $response["amount"] = count($data);
+                  $response["data"] = $data;
               }else{
                 $response["code"] = -13;
               }
@@ -47,6 +51,5 @@
   } else{
     $response["code"] = -10;
   }
-  $response["data"] = $data;
   echo json_encode($response);
 ?>
