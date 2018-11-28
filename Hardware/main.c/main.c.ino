@@ -5,7 +5,7 @@
 #include <ESP8266Wifi.h>
 #include <string.h>
 #include <ESP8266WebServer.h>
-#include <Crypto.h>
+//#include <sha256.h>
 
 /**************************************************************DEFINITIONS PART**************************************************************/
 /*******************************************Change these in correspondence to your implementation.*******************************************/
@@ -25,6 +25,7 @@ float tmp;                                                                      
 float hum;                                                                               /*Humidity measurements go here*/
 HTTPClient http;
 DynamicJsonBuffer jsonBuffer(200);
+
 /***************************************************************THE MAIN CODE*****************************************************************/
 
 void setup() { 
@@ -37,7 +38,7 @@ float readVals(){                                                               
   int reading=analogRead(tempPin);
   float voltage = reading * 3.3; 
   voltage /= 1024.0; 
-  tmp = (voltage - 0.5) * 100;
+  temp = (voltage - 0.5) * 100;
 }
 
 String createString(String strToSend, float tmp, float hmd){                             /*Function creating the string which is to be sent by httpGetRequest*/
@@ -56,31 +57,17 @@ String getSecurityKey(){
   JsonObject& root = jsonBuffer.parseObject(payload);
   String salt=root["salt"];
   Serial.println(salt);
+//  Serial.println(hashString(salt));
   return salt;
 }
 
-String hashSalt(String salt){
-  SHA256 hasher;
-  
-  String key="test_hardcoded_key";
-  String mergedStrings=key+salt;                                                          /*Used only to merge key+salt for upcoming conversion to C-type string,*/
-  char *toHash=(char*) malloc (mergedStrings.length()+1);
-  mergedStrings.toCharArray(toHash,(mergedStrings.length()+1));                                /*because hash function supports only C-type string*/
-  
-  hasher.doUpdate(toHash,strlen(toHash));
-  byte hash[SHA256_SIZE];
-  hasher.doFinal(hash);
-  free(toHash);
-  String hashedKey;
-  
-  for(byte i;i<SHA256_SIZE;i++){
-    Serial.print(hash[i], HEX);
-     // Serial.print(hash[i], HEX);
-      }
-  //Serial.println(hashedKey);
-  return hashedKey; 
-}
-
+//uint8_t hashString(String salt){
+//  uint8_t *hash;
+//  Sha256.init();
+//  Sha256.print(salt);
+//  hash=Sha256.result();
+//  return hash;    
+//}
 
 void httpGetRequest(float tmp, float hmd){                                              /*Function sending http get request to a server*/
   String strToSend;
@@ -99,9 +86,7 @@ void loop() {
     delay(500);
   }
   //httpGetRequest(tmp,hum);
-  String salt=getSecurityKey();
-  String hashedKey=hashSalt(salt);
-  //Serial.println(hashedKey);
+  getSecurityKey();
   delay(5000);
   
 }
