@@ -33,7 +33,7 @@ public class WifiConnection {
     }
 
     private void handleResponse(InputStream response1) throws IOException {
-        Reader in = new BufferedReader(new InputStreamReader(response1,"UTF-8"));
+        Reader in = new BufferedReader(new InputStreamReader(response1, StandardCharsets.UTF_8));
 
         StringBuilder sb = new StringBuilder();
         for(int c; (c = in.read()) >= 0;) {
