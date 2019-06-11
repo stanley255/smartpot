@@ -19,7 +19,6 @@ public class WifiConnection {
         this.password = password;
     }
 
-
     public void connect() {
         try {
             LinkedHashMap<String, String> params = new LinkedHashMap<>();
