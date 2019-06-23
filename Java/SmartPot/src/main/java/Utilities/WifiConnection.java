@@ -19,19 +19,20 @@ public class WifiConnection {
         this.password = password;
     }
 
-    public void connect() {
+    public String connect() {
         try {
             LinkedHashMap<String, String> params = new LinkedHashMap<>();
             params.put("ssid", ssid);
             params.put("pass", password);
             InputStream response = createConnection(initializeData(params));
-            handleResponse(response);
+            return handleResponse(response);
         } catch (IOException e) {
             e.printStackTrace();
         }
+        return "";
     }
 
-    private void handleResponse(InputStream response1) throws IOException {
+    private String handleResponse(InputStream response1) throws IOException {
         Reader in = new BufferedReader(new InputStreamReader(response1, StandardCharsets.UTF_8));
 
         StringBuilder sb = new StringBuilder();
@@ -42,9 +43,15 @@ public class WifiConnection {
         String response = sb.toString();
 //        System.out.println(response); //response in JSON format
 
-        JSONObject myResponse = new JSONObject(response.toString());
-        if (myResponse.getInt("code") == 1) { System.out.println("Recieved code: " + myResponse.getInt("code") + "\r\nREQUEST SENT SUCCSESSFULLY!"); }
-        else if (myResponse.getInt("code") == -1) { System.out.println("Recieved code: " + myResponse.getInt("code") + "\r\nREQUEST NOT SENT SUCCESSFULLY!"); }
+        JSONObject myResponse = new JSONObject(response);
+        if (myResponse.getInt("code") == 1) {
+            System.out.println("Recieved code: " + myResponse.getInt("code") + "\r\nREQUEST SENT SUCCSESSFULLY!");
+            return "\r\nREQUEST SENT SUCCSESSFULLY!";
+        }
+        else if (myResponse.getInt("code") == -1) {
+            System.out.println("Recieved code: " + myResponse.getInt("code") + "\r\nREQUEST NOT SENT SUCCESSFULLY!");
+        }
+        return "\r\nREQUEST NOT SENT SUCCESSFULLY!";
     }
 
     private InputStream createConnection(byte[] postDataBytes) throws IOException {

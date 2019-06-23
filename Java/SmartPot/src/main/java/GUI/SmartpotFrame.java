@@ -2,8 +2,8 @@ package GUI;
 
 import javax.swing.*;
 import java.awt.*;
-
 public class SmartpotFrame extends JFrame {
+    private JEditorPane text;
     public SmartpotFrame() throws HeadlessException {
         initialSetup();
         componentSetup();
@@ -21,6 +21,12 @@ public class SmartpotFrame extends JFrame {
     private void componentSetup() {
         JPanel panel = new JPanel();
         panel.add(new UpdateButton(this));
-        this.getContentPane().add(panel);
+        panel.add(new BulkCollectButton(this));
+        this.getContentPane().add(text = new JEditorPane(), BorderLayout.CENTER);
+        this.getContentPane().add(panel, BorderLayout.NORTH);
+    }
+
+    public void setText(String text) {
+        this.text.setText(text);
     }
 }

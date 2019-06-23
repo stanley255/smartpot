@@ -1,5 +1,6 @@
 package GUI.Listeners;
 
+import GUI.SmartpotFrame;
 import Utilities.LoginDialog;
 import Utilities.WifiConnection;
 
@@ -15,8 +16,15 @@ public class WifiCredentialApproveListener implements ActionListener {
     public void actionPerformed(ActionEvent e) {
         String ssid = dialog.getSSID();
         String password = dialog.getPassword();
-        WifiConnection connection = new WifiConnection(ssid, password);
-        connection.connect();
-        dialog.dispose();
+        if(checkCredentials(ssid, password)) {
+            WifiConnection connection = new WifiConnection(ssid, password);
+            String response = connection.connect();
+            dialog.dispose();
+            ((SmartpotFrame) dialog.getParent()).setText(response);
+        }
+    }
+
+    private boolean checkCredentials(String ssid, String password) {
+        return !ssid.isEmpty() && !password.isEmpty();
     }
 }
